@@ -96,6 +96,11 @@ def avg_std_city(df1, col):
         template='plotly_white'
     )
 
+    if col=='Type_of_order':
+        fig.update_layout(
+            height=350
+        )
+
     chart = st.plotly_chart(fig, use_container_width=True)
     
     return chart
@@ -116,24 +121,27 @@ def avg_std_time_city(df1,):
     )
     
     avg_std_time_city.columns = ['time_mean', 'time_std']
-    avg_std_time_city = avg_std_time_city.reset_index()
+    avg_std_time_city = avg_std_time_city.sort_values(by='time_mean', ascending=True).reset_index()
 
     fig = go.Figure()
     fig.add_trace(go.Bar(
-        x=avg_std_time_city['City'],
-        y=avg_std_time_city['time_mean'],
-        error_y=dict(
+        y=avg_std_time_city['City'],
+        x=avg_std_time_city['time_mean'],
+        error_x=dict(
             type='data',
             array=avg_std_time_city['time_std'],
             visible=True
         ),
+        orientation='h',
+        width=0.4,
         name='Tempo de entrega por cidade (mean ± std)'
     ))
 
     fig.update_layout(                      
-        margin=dict(t=25, b=20, l=10, r=10),
-        xaxis_title='City',
-        yaxis_title='Time',
+        height=200,
+        margin=dict(t=20, b=0, l=10, r=10),
+        yaxis_title='City',
+        xaxis_title='Time',
         template='plotly_white'
     )
     
@@ -361,7 +369,7 @@ with st.container():
 
     with col2:
         with st.container(border=True):
-            st.subheader('Festival')
+            st.subheader('🎆 Festival')
             col01, col02 = st.columns(2)
 
             with col01:
@@ -374,7 +382,7 @@ with st.container():
 
     with col3:
         with st.container(border=True):
-            st.subheader('No Festival')
+            st.subheader('🎆 No Festival')
             col03, col04 = st.columns(2)
 
             with col03:
@@ -392,26 +400,9 @@ indicando sobrecarga na operação ou tráfego mais intenso.""")
 menos_espaco_topo_grafico()
 #Responde: Tempo médio e desvio padrão de entrega por cidade
 with st.container():
-    col1, col2, col3 = st.columns([2, 3, 3])
+    col1, col2 = st.columns([2, 1])
 
     with col1:
-        st.subheader('Cities with slow delivery')
-        avg_std_time_city(df1)
-
-        st.warning("""
-        🚨 **Insight:** Semi-Urban maior demora.
-        """)
-
-
-    with col2:
-        #Responde: Tempo médio e desvio padrão de entrega por cidade e tipo de pedido
-        st.subheader('Order type and delivery delay')
-        avg_std_city(df1, 'Type_of_order')
-        st.caption("""
-        💡 **Insight:** Tipo de pedido não tem influência significativa no tempo.
-        """)
-
-    with col3:
         #Responde: Tempo médio e desvio padrão de entrega por cidade e tipo de tráfego
         st.subheader('Impact of traffic on delivery time')
         avg_std_city(df1, 'Road_traffic_density')
@@ -419,6 +410,19 @@ with st.container():
         st.warning("""
         🚨 **Insight:** Tráfego aumenta o tempo em até 25%
         """)
+
+        st.warning("""
+        🚨 **Insight:** Semi-Urban maior demora em todos os cenários.
+        """)
+
+    with col2:
+        #Responde: Tempo médio e desvio padrão de entrega por cidade e tipo de pedido
+        st.subheader('Order type and delivery delay')
+        avg_std_city(df1, 'Type_of_order')
+
+        #Responde cidade com entrega mais demorada
+        st.subheader('Cities with slow delivery')
+        avg_std_time_city(df1)
 
 st.info("""
     #### 📌 **Conclusão:**

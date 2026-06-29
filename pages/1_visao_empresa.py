@@ -214,7 +214,7 @@ def traffic_order(df1, cols):
         )
 
         fig.update_layout(
-            height=400,                       
+            height=500,                       
             margin=dict(t=25, b=0, l=0, r=0)
         )
     
@@ -251,8 +251,8 @@ def orders_by_day(df1):
     )
 
     fig.update_layout(
-        height=650,                         # Impede que ele estique infinitamente para baixo
-        margin=dict(t=20, b=20, l=10, r=10)
+        height=300,                         # Impede que ele estique infinitamente para baixo
+        margin=dict(t=20, b=0, l=10, r=10)
     )
 
     fig.update_traces(marker_color='#6C5CE7')
@@ -428,18 +428,6 @@ with tab1:
         menos_espaco_topo_grafico()
 
         with col1:
-            #Responde: Quantidade de pedidos por dia
-            st.markdown('### Number of orders by day')
-            orders_by_day(df1)
-
-            st.warning("""
-            🚨 Períodos sem pedidos.""")
-
-        with col2:        
-            #Responde: Distribuição dos pedidos por tipo de tráfego
-            st.markdown('### Orders by Traffic')
-            traffic_order(df1, 'Road_traffic_density')
-
             #Responde: Volume de pedidos por cidade e tipo de tráfego
             st.markdown('### Cities with the most orders')
             traffic_order(df1, ['City', 'Road_traffic_density'])
@@ -449,6 +437,18 @@ with tab1:
 
             st.warning("""
             🚨 Semi-Urban pouquíssimos pedidos.""")
+
+        with col2:        
+            #Responde: Distribuição dos pedidos por tipo de tráfego
+            st.markdown('### Orders by Traffic')
+            traffic_order(df1, 'Road_traffic_density')
+
+            #Responde: Quantidade de pedidos por dia
+            st.markdown('### Number of orders by day')
+            orders_by_day(df1)
+
+            st.warning("""
+            🚨 Períodos sem pedidos.""")
 
     st.info("""
         #### 📌 **Conclusão:**
