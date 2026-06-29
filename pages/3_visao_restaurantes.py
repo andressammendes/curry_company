@@ -341,7 +341,13 @@ df1 = df1.loc[linhas_selecionadas, :]
 # ======================================================
 # Layout no Streamlit
 # ======================================================
-
+st.warning("""
+🚨 **Principais descobertas:**
+- Tráfego é o maior fator de atraso  
+- Regiões Semi-Urban são mais lentas  
+- Eventos aumentam drasticamente o tempo 
+- Sem eventos há uma grande variação de tempo 
+""")
 with st.container():
     col1, col2, col3 = st.columns(3)
 
@@ -353,11 +359,11 @@ with st.container():
             with col01:
                 #Responde: Quantos entregadores únicos
                 delivery_person_unique = df1.loc[:, 'Delivery_person_ID'].nunique()
-                col01.metric('Delivery persons', delivery_person_unique)
+                col01.metric('Number of delivery persons', delivery_person_unique)
 
             with col02:
                 #Responde: Distância média dos restaurantes e dos locais de entrega
-                col02.metric('Avg distance', distance(df1))
+                col02.metric('Avg distance traveled', distance(df1))
 
     with col2:
         with st.container(border=True):
@@ -385,8 +391,8 @@ with st.container():
                 #Responde: Desvio padrão de entrega quando NÃO há festival
                 col04.metric('Std time', avg_std_time_delivery(df1, 'No', op='std'))
 
-st.warning("""
-🚨 **Atenção:** Durante festivais, o tempo médio aumenta mais de 70%,
+st.info("""
+💡 **Atenção:** Durante festivais, o tempo médio aumenta mais de 70%,
 indicando sobrecarga na operação ou tráfego mais intenso.""")
 
 menos_espaco_topo_grafico()
@@ -421,8 +427,15 @@ with st.container():
         """)
 
 st.warning("""
-🚨 **Principais descobertas:**
-- Tráfego é o maior fator de atraso  
-- Regiões Semi-Urban são mais lentas  
-- Eventos aumentam drasticamente o tempo  
-""")
+    #### 📌 **Conclusão:**
+    A análise mostra que o tempo de entrega é fortemente impactado pela densidade de tráfego e pela ocorrência de eventos (festivais).
+
+    Durante períodos de alto tráfego e eventos, há aumento significativo tanto no tempo médio quanto na variabilidade das entregas, indicando perda de eficiência operacional.
+
+    Isso sugere que a operação atual não está preparada para lidar com picos de demanda e condições adversas.
+
+            Recomenda-se:
+            - Reforço de entregadores em períodos críticos
+            - Ajuste dinâmico de rotas
+            - Estratégias específicas para eventos
+    """)

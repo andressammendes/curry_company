@@ -421,6 +421,13 @@ df1 = df1.loc[linhas_selecionadas, :]
 tab1, tab2, tab3 = st.tabs(['Visão Gerencial', 'Visão Tática', 'Visão Geográfica'])
 
 with tab1:
+    st.warning("""
+    🚨 **Principais descobertas:**
+    - Há períodos em que não foram realizados pedidos. Feriados?
+    - Cidade Metropolitian tem o maior número de pedidos.
+    - Semi-Urban quase não recebe pedidos.
+    """)
+        
     with st.container():
         col1, col2 = st.columns([2, 1])
         menos_espaco_topo_grafico()
@@ -430,23 +437,45 @@ with tab1:
             st.markdown('### Number of orders by day')
             orders_by_day(df1)
 
+            st.info("""
+            💡 **Atenção:** Períodos sem pedidos.""")
+
         with col2:        
             #Responde: Distribuição dos pedidos por tipo de tráfego
             st.markdown('### Orders by Traffic')
             traffic_order(df1, 'Road_traffic_density')
 
+            st.info("""
+            💡 **Atenção:** Menos pedidos são realizados em tráfego High.""")
+
             #Responde: Volume de pedidos por cidade e tipo de tráfego
             st.markdown('### Cities with the most orders')
             traffic_order(df1, ['City', 'Road_traffic_density'])
 
+            st.info("""
+            💡 **Atenção:** Metropolitian tem mais pedidos.""")
+
+            st.info("""
+            💡 **Atenção:** Semi-Urban pouquíssimos pedidos.""")
+
     st.warning("""
-    🚨 **Principais descobertas:**
-    - Há períodos em que não foram realizados pedidos.
-    - Cidades Metropolitian recebem mais pedidos.
-    - Semi-Urban quase não recebe pedidos.
-    """)
+        #### 📌 **Conclusão:**
+        A análise mostra que a cidade Metropolitian recebe quase 80% de todos os pedidos, enquanto a Semi-Urban não chega a 0.5%.
+
+        O grande volume de pedidos na cidade Metropolitian indica a centralização dos clientes nesta região.
+
+        Semi-Urban com pouquíssimos pedidos.
+
+                Recomenda-se:
+                - Incentivos de adoção de novos clientes na região Semi-Urban
+                - Expansão da base de parceiros
+        """)
 
 with tab2:
+    st.warning("""
+    🚨 **Principais descobertas:**
+    - A curva de crescimento dos pedidos costuma ser proporcional ao número de pedidos entregues por entregador.
+    """)
     with st.container():
         col1, col2 = st.columns(2)
 
