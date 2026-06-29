@@ -344,7 +344,7 @@ df1 = df1.loc[linhas_selecionadas, :]
 st.warning("""
 🚨 **Principais descobertas:**
 - Tráfego é o maior fator de atraso  
-- Regiões Semi-Urban são mais lentas  
+- Regiões Semi-Urban tem entregas mais demoradas 
 - Eventos aumentam drasticamente o tempo 
 - Sem eventos há uma grande variação de tempo 
 """)
