@@ -341,13 +341,7 @@ df1 = df1.loc[linhas_selecionadas, :]
 # ======================================================
 # Layout no Streamlit
 # ======================================================
-st.warning("""
-🚨 **Principais descobertas:**
-- Tráfego é o maior fator de atraso  
-- Regiões Semi-Urban tem entregas mais demoradas
-- Eventos aumentam drasticamente o tempo 
-- Sem eventos há uma grande variação de tempo 
-""")
+st.info("Análise do tempo de entrega quando há ou não Festival e tempo médio de entregas por cidade, por tipo de pedido e por densidade de tráfego.")
 with st.container():
     col1, col2, col3 = st.columns(3)
 
@@ -392,7 +386,7 @@ with st.container():
                 col04.metric('Std time', avg_std_time_delivery(df1, 'No', op='std'))
 
 st.warning("""
-💡 **Atenção:** Durante festivais, o tempo médio aumenta mais de 70%,
+🚨 **Atenção:** Durante festivais, o tempo médio aumenta mais de 70%,
 indicando sobrecarga na operação ou tráfego mais intenso.""")
 
 menos_espaco_topo_grafico()
@@ -405,7 +399,7 @@ with st.container():
         avg_std_time_city(df1)
 
         st.warning("""
-        💡 **Insight:** Semi-Urban maior demora.
+        🚨 **Insight:** Semi-Urban maior demora.
         """)
 
 
@@ -423,7 +417,7 @@ with st.container():
         avg_std_city(df1, 'Road_traffic_density')
 
         st.warning("""
-        💡 **Insight:** Tráfego aumenta o tempo em até 25%
+        🚨 **Insight:** Tráfego aumenta o tempo em até 25%
         """)
 
 st.info("""

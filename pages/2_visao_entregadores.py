@@ -291,10 +291,7 @@ df1 = df1.loc[linhas_selecionadas, :]
 tab1, tab2 = st.tabs(['Visão Gerencial', 'Visão Tática'])
 
 with tab1:
-    st.warning("""
-    🚨 **Principais descobertas:**
-    - Há uma grande diferença de performance entre os entregadores mais rápidos e mais lentos.
-    """)
+    st.info("Análise da performance dos entregadores.")
     with st.container():
         col1, col2 = st.columns(2)
 
@@ -337,7 +334,7 @@ with tab1:
             top_delivers(df1, top_asc=False)
 
             st.success("""
-            💡 **Atenção:** Os entregadores mais rápido tem uma média de 10 minutos.""")
+            💡 Os entregadores mais rápido tem uma média de 10 minutos.""")
 
         with col2:
             #Responde: 10 entregadores mais lentos
@@ -345,11 +342,11 @@ with tab1:
             top_delivers(df1, top_asc=True)
 
             st.warning("""
-            💡 **Atenção:** Os entregadores mais lentos tem uma média de quase 1h.""")
+            🚨 Os entregadores mais lentos tem uma média de quase 1h.""")
 
     st.info("""
         #### 📌 **Conclusão:**
-        A análise mostra que há uma grande variação no tempo de entrega dos entregadores.
+        A análise mostra que há uma grande variação no tempo de entrega entre os entregadores.
         
                Recomenda-se:
                - Padronização nas entregas.
@@ -358,10 +355,7 @@ with tab1:
         """)
 
 with tab2:
-    st.warning("""
-    🚨 **Principais descobertas:**
-    - As avaliações costumam ser menores quando em tráfico é Jam.
-    """)
+    st.info("Análise das avaliações médias de cada entregador, e das avaliações por densidade de tráfego e por condição climática.")
     with st.container():
         col1, col2 = st.columns(2)
 
@@ -371,7 +365,7 @@ with tab2:
             avg_ratings_delivery_person(df1)
 
             st.info("""
-            💡 **Atenção:** A avaliação média dos entregadores varia de 4.3 a 4.9.""")
+            💡A avaliação média dos entregadores varia de 4.3 a 4.9.""")
 
         with col2:
             #Responde: Avaliações médias por trânsito
@@ -379,14 +373,14 @@ with tab2:
             get_avg_std_ratings(df1, 'Road_traffic_density')
 
             st.warning("""
-            💡 **Atenção:** As avaliações médias das entregas em tráfego Jam são menores.""")
+            🚨 As avaliações médias das entregas em tráfego Jam são menores.""")
 
             #Responde: Avaliações médias por condições climáticas
             st.markdown('##### Do weather conditions influence ratings?')
             get_avg_std_ratings(df1, 'Weatherconditions')
 
             st.caption("""
-            💡 **Atenção:** A avaliação média não sofre alteração significativa em diferentes climas.""")
+            💡A avaliação média não sofre alteração significativa em diferentes climas.""")
 
     st.info("""
         #### 📌 **Conclusão:**

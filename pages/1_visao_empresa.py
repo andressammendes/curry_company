@@ -421,12 +421,7 @@ df1 = df1.loc[linhas_selecionadas, :]
 tab1, tab2, tab3 = st.tabs(['Visão Gerencial', 'Visão Tática', 'Visão Geográfica'])
 
 with tab1:
-    st.warning("""
-    🚨 **Principais descobertas:**
-    - Há períodos em que não foram realizados pedidos. Feriados?
-    - Cidade Metropolitian tem o maior número de pedidos.
-    - Semi-Urban quase não recebe pedidos.
-    """)
+    st.info("Análise da quantidade de pedidos realizados por data, tráfego e cidade.")
         
     with st.container():
         col1, col2 = st.columns([2, 1])
@@ -438,25 +433,22 @@ with tab1:
             orders_by_day(df1)
 
             st.warning("""
-            💡 **Atenção:** Períodos sem pedidos.""")
+            🚨 Períodos sem pedidos.""")
 
         with col2:        
             #Responde: Distribuição dos pedidos por tipo de tráfego
             st.markdown('### Orders by Traffic')
             traffic_order(df1, 'Road_traffic_density')
 
-            st.caption("""
-            💡 **Atenção:** Menos pedidos são realizados em tráfego High.""")
-
             #Responde: Volume de pedidos por cidade e tipo de tráfego
             st.markdown('### Cities with the most orders')
             traffic_order(df1, ['City', 'Road_traffic_density'])
 
             st.success("""
-            💡 **Atenção:** Metropolitian tem mais pedidos.""")
+            💡 Metropolitian tem mais pedidos.""")
 
             st.warning("""
-            💡 **Atenção:** Semi-Urban pouquíssimos pedidos.""")
+            🚨 Semi-Urban pouquíssimos pedidos.""")
 
     st.info("""
         #### 📌 **Conclusão:**
@@ -472,10 +464,6 @@ with tab1:
         """)
 
 with tab2:
-    st.success("""
-    🚨 **Principais descobertas:**
-    - A curva de crescimento dos pedidos costuma ser proporcional ao número de pedidos entregues por entregador.
-    """)
     with st.container():
         col1, col2 = st.columns(2)
 
@@ -488,7 +476,11 @@ with tab2:
             #Responde: Quantos pedidos cada entregador entrega por semana, em média?
             st.markdown('### Orders delivered by delivery person')
             order_share_by_week(df1)
-
+    
+    st.success("""
+    💡 A curva de crescimento dos pedidos costuma ser proporcional ao número de pedidos entregue por entregador.
+    """)
+        
 with tab3:
     with st.container():
         #Responde: Localização central de entrega em cada cidade por tipo de tráfego
