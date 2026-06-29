@@ -344,7 +344,7 @@ df1 = df1.loc[linhas_selecionadas, :]
 st.warning("""
 🚨 **Principais descobertas:**
 - Tráfego é o maior fator de atraso  
-- Regiões Semi-Urban tem entregas mais demoradas 
+- Regiões Semi-Urban tem entregas mais demoradas
 - Eventos aumentam drasticamente o tempo 
 - Sem eventos há uma grande variação de tempo 
 """)
@@ -391,7 +391,7 @@ with st.container():
                 #Responde: Desvio padrão de entrega quando NÃO há festival
                 col04.metric('Std time', avg_std_time_delivery(df1, 'No', op='std'))
 
-st.info("""
+st.warning("""
 💡 **Atenção:** Durante festivais, o tempo médio aumenta mais de 70%,
 indicando sobrecarga na operação ou tráfego mais intenso.""")
 
@@ -404,7 +404,7 @@ with st.container():
         st.subheader('Cities with slow delivery')
         avg_std_time_city(df1)
 
-        st.info("""
+        st.warning("""
         💡 **Insight:** Semi-Urban maior demora.
         """)
 
@@ -413,7 +413,7 @@ with st.container():
         #Responde: Tempo médio e desvio padrão de entrega por cidade e tipo de pedido
         st.subheader('Order type and delivery delay')
         avg_std_city(df1, 'Type_of_order')
-        st.info("""
+        st.caption("""
         💡 **Insight:** Tipo de pedido não tem influência significativa no tempo.
         """)
 
@@ -422,11 +422,11 @@ with st.container():
         st.subheader('Impact of traffic on delivery time')
         avg_std_city(df1, 'Road_traffic_density')
 
-        st.info("""
+        st.warning("""
         💡 **Insight:** Tráfego aumenta o tempo em até 25%
         """)
 
-st.warning("""
+st.info("""
     #### 📌 **Conclusão:**
     A análise mostra que o tempo de entrega é fortemente impactado pela densidade de tráfego e pela ocorrência de eventos (festivais).
 

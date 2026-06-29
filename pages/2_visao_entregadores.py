@@ -336,7 +336,7 @@ with tab1:
             st.markdown('##### Top 10 Fastest Delivery Person')
             top_delivers(df1, top_asc=False)
 
-            st.info("""
+            st.success("""
             💡 **Atenção:** Os entregadores mais rápido tem uma média de 10 minutos.""")
 
         with col2:
@@ -344,10 +344,10 @@ with tab1:
             st.markdown('##### Top 10 Slowest Delivery Person')
             top_delivers(df1, top_asc=True)
 
-            st.info("""
+            st.warning("""
             💡 **Atenção:** Os entregadores mais lentos tem uma média de quase 1h.""")
 
-    st.warning("""
+    st.info("""
         #### 📌 **Conclusão:**
         A análise mostra que há uma grande variação no tempo de entrega dos entregadores.
         
@@ -378,17 +378,17 @@ with tab2:
             st.markdown('##### Does traffic density influence ratings?')
             get_avg_std_ratings(df1, 'Road_traffic_density')
 
-            st.info("""
+            st.warning("""
             💡 **Atenção:** As avaliações médias das entregas em tráfego Jam são menores.""")
 
             #Responde: Avaliações médias por condições climáticas
             st.markdown('##### Do weather conditions influence ratings?')
             get_avg_std_ratings(df1, 'Weatherconditions')
 
-            st.info("""
+            st.caption("""
             💡 **Atenção:** A avaliação média não sofre alteração significativa em diferentes climas.""")
 
-    st.warning("""
+    st.info("""
         #### 📌 **Conclusão:**
         A análise mostra que quando o tráfico é Jam há uma pequena queda na média das avaliações.
 

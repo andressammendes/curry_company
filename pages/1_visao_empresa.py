@@ -437,7 +437,7 @@ with tab1:
             st.markdown('### Number of orders by day')
             orders_by_day(df1)
 
-            st.info("""
+            st.warning("""
             💡 **Atenção:** Períodos sem pedidos.""")
 
         with col2:        
@@ -445,20 +445,20 @@ with tab1:
             st.markdown('### Orders by Traffic')
             traffic_order(df1, 'Road_traffic_density')
 
-            st.info("""
+            st.caption("""
             💡 **Atenção:** Menos pedidos são realizados em tráfego High.""")
 
             #Responde: Volume de pedidos por cidade e tipo de tráfego
             st.markdown('### Cities with the most orders')
             traffic_order(df1, ['City', 'Road_traffic_density'])
 
-            st.info("""
+            st.success("""
             💡 **Atenção:** Metropolitian tem mais pedidos.""")
 
-            st.info("""
+            st.warning("""
             💡 **Atenção:** Semi-Urban pouquíssimos pedidos.""")
 
-    st.warning("""
+    st.info("""
         #### 📌 **Conclusão:**
         A análise mostra que a cidade Metropolitian recebe quase 80% de todos os pedidos, enquanto a Semi-Urban não chega a 0.5%.
 
@@ -472,7 +472,7 @@ with tab1:
         """)
 
 with tab2:
-    st.warning("""
+    st.success("""
     🚨 **Principais descobertas:**
     - A curva de crescimento dos pedidos costuma ser proporcional ao número de pedidos entregues por entregador.
     """)
