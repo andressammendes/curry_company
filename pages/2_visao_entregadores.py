@@ -16,6 +16,21 @@ st.set_page_config(page_title='Visão Entregadores', page_icon='🏍️​', lay
 # =====================================================
 # Funções
 # =====================================================
+def menos_espaco_topo_grafico():
+    st.markdown("""
+        <style>
+            /* Alvo direto na caixa que carrega o iframe/gráfico do Plotly */
+            div[data-testid="stPlotlyChart"] {
+                margin-top: -30px !important; /* Puxa o gráfico para cima */
+            }
+            
+            /* Remove espaços internos extras do bloco do Streamlit */
+            div[data-testid="stVerticalBlock"] > div {
+                padding-bottom: 0px !important;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
 def avg_ratings_delivery_person(df1):
     """
         Esta função calcula a média das avaliações que cada entregador recebeu e retorna um dataframe com as informações obtidas.
@@ -107,6 +122,7 @@ def top_delivers(df1, top_asc):
     )
     
     fig.update_layout(
+        margin=dict(l=50, r=20, t=30, b=10),
         xaxis_title='Delivery Time',
         yaxis_title='Delivery person ID',
         template='plotly_white'
@@ -185,19 +201,44 @@ df1 = clean_code(df)
 # Visão dos Entregadores
 # =====================================================
 st.set_page_config(layout="wide")
+
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            div[data-testid="stMainBlockContainer"] {
+                padding-top: 0rem; 
+                padding-bottom: 0rem;
+            }
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
 st.markdown('# Marketplace - Delivery Person View', text_alignment="center")
 
 # ======================================================
 # Barra lateral
 # ======================================================
+st.markdown(
+    """
+    <style>
+        [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+            gap: 0.2rem;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 image = Image.open('logo.jpg')
-st.sidebar.image(image, width=120)
+st.sidebar.image(image, width=100)
 
 st.sidebar.markdown('# Curry Company')   
 st.sidebar.markdown('## Fastest Delivery in Town')  
 st.sidebar.markdown( "---" )
 
-st.sidebar.markdown( '## Select the deadline date' )
+st.sidebar.markdown( '## Filters:' )
 
 date_slider = st.sidebar.slider( 
     'Deadline date',
@@ -206,8 +247,6 @@ date_slider = st.sidebar.slider(
     max_value=datetime(2022, 4, 6),
     format='DD-MM-YYYY'
 )
-
-st.sidebar.markdown("---")
 
 city_options = st.sidebar.multiselect(
     'City',
@@ -227,8 +266,8 @@ weather_options = st.sidebar.multiselect(
     default = ['Sunny', 'Stormy', 'Sandstorms', 'Cloudy', 'Fog', 'Windy']
 )
 
-st.sidebar.markdown("---")
-st.sidebar.markdown('### Powered by Andressa Melo Mendes')
+st.sidebar.markdown('---')
+st.sidebar.markdown('#### • Powered by Andressa Melo Mendes')
 
 #Filtro de data:
 linhas_selecionadas = df1['Order_Date'] < date_slider
@@ -249,75 +288,69 @@ df1 = df1.loc[linhas_selecionadas, :]
 # ======================================================
 # Layout no Streamlit
 # ======================================================
-st.markdown('---')
-st.title('Overall Metrics')
+tab1, tab2 = st.tabs(['Visão Gerencial', 'Visão Tática'])
 
-with st.container():
-    col1, col2 = st.columns(2)
+with tab1:
+    with st.container():
+        col1, col2 = st.columns(2)
 
-    with col1:
-        #Delivery person metric
-        #Responde: Idade dos entregadores (maior e menor)
-        st.markdown('### • Delivery person age')
-            
-        with st.container():
-            col01, col02 = st.columns(2)
+        with col1:
+            #Delivery person metric
+            #Responde: Idade dos entregadores (maior e menor)
+            with st.container(border=True):
+                st.subheader('Delivery person age')
+                col01, col02 = st.columns(2)
 
-            with col01:
-                older = df1.loc[:, 'Delivery_person_Age'].max()
-                col01.metric('Older', older)
+                with col01:
+                    older = df1.loc[:, 'Delivery_person_Age'].max()
+                    col01.metric('Older', older)
 
-            with col02:
-                younger = df1.loc[:, 'Delivery_person_Age'].min()
-                col02.metric('Younger', younger)           
+                with col02:
+                    younger = df1.loc[:, 'Delivery_person_Age'].min()
+                    col02.metric('Younger', younger)           
 
-    with col2:
-        #Responde: Condição dos veículos (melhor e pior)
-        st.markdown('### • Vehicle condition')
+        with col2:
+            #Responde: Condição dos veículos (melhor e pior)
+            with st.container(border=True):
+                st.subheader('Vehicle condition')
+                col01, col02 = st.columns(2)
 
-        with st.container():
-            col01, col02 = st.columns(2)
+                with col01:
+                    best = df1.loc[:, 'Vehicle_condition'].max()
+                    col01.metric('Best', best)
 
-            with col01:
-                best = df1.loc[:, 'Vehicle_condition'].max()
-                col01.metric('Best', best)
+                with col02:
+                    worst = df1.loc[:, 'Vehicle_condition'].min()
+                    col02.metric('Worst', worst)
 
-            with col02:
-                worst = df1.loc[:, 'Vehicle_condition'].min()
-                col02.metric('Worst', worst)
+    with st.container():
+        col1, col2 = st.columns(2)
+        menos_espaco_topo_grafico()
 
-st.markdown('---')
-st.title('Ratings:')
+        with col1:
+            #Responde: 10 entregadores mais rápidos
+            st.markdown('##### Top 10 Fastest Delivery Person')
+            top_delivers(df1, top_asc=False)
 
-with st.container():
-    col1, col2 = st.columns(2)
+        with col2:
+            #Responde: 10 entregadores mais lentos
+            st.markdown('##### Top 10 Slowest Delivery Person')
+            top_delivers(df1, top_asc=True)
 
-    with col1:  
-        #Responde: Avaliações médias por entregador
-        st.markdown('##### Avg Ratings by Delivery Person')
-        avg_ratings_delivery_person(df1)
+with tab2:
+    with st.container():
+        col1, col2 = st.columns(2)
 
-    with col2:
-        #Responde: Avaliações médias por trânsito
-        st.markdown('##### Avg Ratings by Traffic Density')
-        get_avg_std_ratings(df1, 'Road_traffic_density')
+        with col1:  
+            #Responde: Avaliações médias por entregador
+            st.markdown('##### Delivery person ratings')
+            avg_ratings_delivery_person(df1)
 
-        #Responde: Avaliações médias por condições climáticas
-        st.markdown('##### Avg Ratings by Weather Conditions')
-        get_avg_std_ratings(df1, 'Weatherconditions')
+        with col2:
+            #Responde: Avaliações médias por trânsito
+            st.markdown('##### Does traffic density influence ratings?')
+            get_avg_std_ratings(df1, 'Road_traffic_density')
 
-st.markdown('---')
-st.title('Delivery Speed:')
-
-with st.container():
-    col1, col2 = st.columns(2)
-
-    with col1:
-        #Responde: 10 entregadores mais rápidos
-        st.markdown('##### Top 10 Fastest Delivery Person')
-        top_delivers(df1, top_asc=False)
-
-    with col2:
-        #Responde: 10 entregadores mais lentos
-        st.markdown('##### Top 10 Slowest Delivery Person')
-        top_delivers(df1, top_asc=True)
+            #Responde: Avaliações médias por condições climáticas
+            st.markdown('##### Do weather conditions influence ratings?')
+            get_avg_std_ratings(df1, 'Weatherconditions')

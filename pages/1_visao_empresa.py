@@ -16,6 +16,21 @@ st.set_page_config(page_title='Visão Empresa', page_icon='📈', layout='wide')
 # =====================================================
 # Funções
 # =====================================================
+def menos_espaco_topo_grafico():
+    st.markdown("""
+        <style>
+            /* Alvo direto na caixa que carrega o iframe/gráfico do Plotly */
+            div[data-testid="stPlotlyChart"] {
+                margin-top: -30px !important; /* Puxa o gráfico para cima */
+            }
+            
+            /* Remove espaços internos extras do bloco do Streamlit */
+            div[data-testid="stVerticalBlock"] > div {
+                padding-bottom: 0px !important;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
 def country_maps(df1):
     """
         Esta função responde qual a localização central de entrega em cada cidade por tipo de tráfego e retorna um mapa mundial com marcadores nas localizações centrais.
@@ -40,7 +55,7 @@ def country_maps(df1):
                     location_info['Delivery_location_longitude']],
                     popup=location_info[['City', 'Road_traffic_density']]).add_to(map)
 
-    maps = folium_static(map, width=1024, height=600)
+    maps = folium_static(map, height=500)
 
     return maps
 
@@ -88,6 +103,7 @@ def order_share_by_week (df1):
     )
 
     fig.update_layout(
+        height=500,
         xaxis_title='Week of Year',
         yaxis_title='Order by Delivery Person',
         template='plotly_white'
@@ -127,11 +143,12 @@ def order_by_week(df1):
     )
 
     fig.update_layout(
+        height=500,
         xaxis_title='Week of Year',
         yaxis_title='ID',
         template='plotly_white'
     )
-
+         
     chart = st.plotly_chart(fig, use_container_width=True)
 
     return chart
@@ -175,6 +192,15 @@ def traffic_order(df1, cols):
             category_orders={'Road_traffic_density': ['Low', 'Medium', 'High', 'Jam']}
         )
 
+        fig.update_layout(
+            height=200,                          # Força o gráfico de pizza a ser pequeno
+            margin=dict(t=30, b=0, l=0, r=0),    # Zera as folgas internas que empurram o texto
+            legend=dict(
+                orientation="v",                # Mantém a legenda vertical
+                yanchor="middle", y=0.5         # Centraliza a legenda na altura do gráfico
+            )
+        )
+    
     else:    
         fig = px.bar(
             orders_by_traffic, 
@@ -185,6 +211,11 @@ def traffic_order(df1, cols):
             text_auto=True,
             color_discrete_map=cores_transito,
             category_orders={'Road_traffic_density': ['Low', 'Medium', 'High', 'Jam']}
+        )
+
+        fig.update_layout(
+            height=400,                       
+            margin=dict(t=25, b=0, l=0, r=0)
         )
     
     chart = st.plotly_chart(fig, use_container_width=True)
@@ -219,7 +250,13 @@ def orders_by_day(df1):
         template='plotly_white'
     )
 
+    fig.update_layout(
+        height=650,                         # Impede que ele estique infinitamente para baixo
+        margin=dict(t=20, b=20, l=10, r=10)
+    )
+
     fig.update_traces(marker_color='#6C5CE7')
+    
     
     chart = st.plotly_chart(fig, use_container_width=True)
 
@@ -294,19 +331,44 @@ df1 = clean_code(df)
 # Visão da Empresa
 # =====================================================
 st.set_page_config(layout="wide")
+
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            div[data-testid="stMainBlockContainer"] {
+                padding-top: 0rem; 
+                padding-bottom: 0rem;
+            }
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
 st.markdown('# Marketplace - Company View', text_alignment="center")
 
 # ======================================================
 # Barra lateral
 # ======================================================
+st.markdown(
+    """
+    <style>
+        [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+            gap: 0.2rem;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 image = Image.open('logo.jpg')
-st.sidebar.image(image, width=120)
+st.sidebar.image(image, width=100)
 
 st.sidebar.markdown('# Curry Company')   
 st.sidebar.markdown('## Fastest Delivery in Town')  
 st.sidebar.markdown( "---" )
 
-st.sidebar.markdown( '## Select the deadline date' )
+st.sidebar.markdown( '## Filters:' )
 
 date_slider = st.sidebar.slider( 
     'Deadline date',
@@ -315,8 +377,6 @@ date_slider = st.sidebar.slider(
     max_value=datetime(2022, 4, 6),
     format='DD-MM-YYYY'
 )
-
-st.sidebar.markdown("---")
 
 city_options = st.sidebar.multiselect(
     'City',
@@ -336,8 +396,8 @@ weather_options = st.sidebar.multiselect(
     default = ['Sunny', 'Stormy', 'Sandstorms', 'Cloudy', 'Fog', 'Windy']
 )
 
-st.sidebar.markdown("---")
-st.sidebar.markdown('### Powered by Andressa Melo Mendes')
+st.sidebar.markdown('---')
+st.sidebar.markdown('#### • Powered by Andressa Melo Mendes')
 
 #Filtro de data:
 linhas_selecionadas = df1['Order_Date'] < date_slider
@@ -362,36 +422,46 @@ tab1, tab2, tab3 = st.tabs(['Visão Gerencial', 'Visão Tática', 'Visão Geogr�
 
 with tab1:
     with st.container():
-        #Responde: Quantidade de pedidos por dia
-        st.markdown('## Orders by Day')
-        orders_by_day(df1)
+        col1, col2 = st.columns([2, 1])
+        menos_espaco_topo_grafico()
 
+        with col1:
+            #Responde: Quantidade de pedidos por dia
+            st.markdown('### Number of orders by day')
+            orders_by_day(df1)
+
+        with col2:        
+            #Responde: Distribuição dos pedidos por tipo de tráfego
+            st.markdown('### Orders by Traffic')
+            traffic_order(df1, 'Road_traffic_density')
+
+            #Responde: Volume de pedidos por cidade e tipo de tráfego
+            st.markdown('### Cities with the most orders')
+            traffic_order(df1, ['City', 'Road_traffic_density'])
+
+    st.warning("""
+    🚨 **Principais descobertas:**
+    - Há períodos em que não foram realizados pedidos.
+    - Cidades Metropolitian recebem mais pedidos.
+    - Semi-Urban quase não recebe pedidos.
+    """)
+
+with tab2:
     with st.container():
         col1, col2 = st.columns(2)
 
         with col1:
-            #Responde: Distribuição dos pedidos por tipo de tráfego
-            st.markdown('## Orders by Traffic')
-            traffic_order(df1, 'Road_traffic_density')
+            #Responde: Quantidade de pedidos por semana
+            st.markdown('### Orders by Week')  
+            order_by_week(df1)
 
         with col2:
-            #Responde: Volume de pedidos por cidade e tipo de tráfego
-            st.markdown('## Orders by City and Traffic')
-            traffic_order(df1, ['City', 'Road_traffic_density'])
-
-with tab2:
-    with st.container():
-        #Responde: Quantidade de pedidos por semana
-        st.markdown('## Orders by Week')  
-        order_by_week(df1)
-
-    with st.container():
-        #Responde: Quantos pedidos cada entregador entrega por semana, em média?
-        st.markdown('## Orders by Delivery Person by Week')
-        order_share_by_week(df1)
+            #Responde: Quantos pedidos cada entregador entrega por semana, em média?
+            st.markdown('### Orders delivered by delivery person')
+            order_share_by_week(df1)
 
 with tab3:
     with st.container():
         #Responde: Localização central de entrega em cada cidade por tipo de tráfego
-        st.markdown('## Country Maps')
+        st.markdown('### Country Maps')
         country_maps(df1)

@@ -17,6 +17,20 @@ st.set_page_config(page_title='Visão Restaurantes', page_icon='​🍽️​​
 # =====================================================
 # Funções
 # =====================================================
+def menos_espaco_topo_grafico():
+    st.markdown("""
+        <style>
+            /* Alvo direto na caixa que carrega o iframe/gráfico do Plotly */
+            div[data-testid="stPlotlyChart"] {
+                margin-top: -30px !important; /* Puxa o gráfico para cima */
+            }
+            
+            /* Remove espaços internos extras do bloco do Streamlit */
+            div[data-testid="stVerticalBlock"] > div {
+                padding-bottom: 0px !important;
+            }
+        </style>
+    """, unsafe_allow_html=True)
 
 def avg_std_city(df1, col):
     """
@@ -27,6 +41,12 @@ def avg_std_city(df1, col):
                 - col: coluna que será avaliada.
                     'Road_traffic_density': Calcula pela densidade de tráfego
                     'Type_of_order': Calcula pelo tipo de pedido
+                - category_orders: passa a order das categorias apresentadas no gráfico
+                    ordem_traffic
+                    ordem_types
+                - color_sequence: para uma sequência de cores para ser utilizado no gráfico
+                    color_traffic
+                    color_types
             Output:
                 - Gráfico de barras com barras de erro. No eixo X temos as cidades e no eixo Y o tempo médio, já as barras de erro mostram o desvio padrão.
     """
@@ -39,16 +59,38 @@ def avg_std_city(df1, col):
     avg_std_time_city_order.columns = ['avg_time', 'std_time']
     avg_std_time_city_order = avg_std_time_city_order.reset_index()
 
+    ordens = {'Road_traffic_density': ['Low', 'Medium', 'High', 'Jam'],
+             'Type_of_order': ['Drinks', 'Snack', 'Meal', 'Buffet']
+    }
+
+    colors = {
+        'Road_traffic_density': {
+        'Low': '#2ECC71',    
+        'Medium': '#F1C40F', 
+        'High': '#E67E22',    
+        'Jam': '#E74C3C'     
+        },
+        'Type_of_order': {
+        'Drinks': '#5BC0DE ',    
+        'Snack': '#F0AD4E ', 
+        'Meal': '#D9534F ',    
+        'Buffet': '#8A6D3B '     
+        }
+    }
+
     fig = px.bar(
         avg_std_time_city_order,
         x='City',
         y='avg_time',
         color=col,
         barmode='group',
-        error_y='std_time'
+        error_y='std_time',
+        color_discrete_map=colors[col],
+        category_orders={col: ordens[col]}
     )
 
-    fig.update_layout(
+    fig.update_layout(                     
+        margin=dict(t=25, b=20, l=10, r=10),
         xaxis_title='City',
         yaxis_title='Time',
         template='plotly_white'
@@ -58,7 +100,7 @@ def avg_std_city(df1, col):
     
     return chart
 
-def avg_std_time_city(df1):
+def avg_std_time_city(df1,):
     """
         Esta função calcula e responde o tempo médio e o desvio padrão das entregas por cidade e retorna um gráfico apresentando os resultados.
         Parâmetros:
@@ -88,9 +130,10 @@ def avg_std_time_city(df1):
         name='Tempo de entrega por cidade (mean ± std)'
     ))
 
-    fig.update_layout(
+    fig.update_layout(                      
+        margin=dict(t=25, b=20, l=10, r=10),
         xaxis_title='City',
-        yaxis_title='Average time',
+        yaxis_title='Time',
         template='plotly_white'
     )
     
@@ -211,19 +254,44 @@ df1 = clean_code(df)
 # Visão dos Restaurantes
 # =====================================================
 st.set_page_config(layout="wide")
+
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            div[data-testid="stMainBlockContainer"] {
+                padding-top: 0rem; 
+                padding-bottom: 0rem;
+            }
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
 st.markdown('# Marketplace - Restaurant View', text_alignment="center")
 
 # ======================================================
 # Barra lateral
 # ======================================================
+st.markdown(
+    """
+    <style>
+        [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+            gap: 0.2rem;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 image = Image.open('logo.jpg')
-st.sidebar.image(image, width=120)
+st.sidebar.image(image, width=100)
 
 st.sidebar.markdown('# Curry Company')   
 st.sidebar.markdown('## Fastest Delivery in Town')  
 st.sidebar.markdown( "---" )
 
-st.sidebar.markdown( '## Select the deadline date' )
+st.sidebar.markdown( '## Filters:' )
 
 date_slider = st.sidebar.slider( 
     'Deadline date',
@@ -232,8 +300,6 @@ date_slider = st.sidebar.slider(
     max_value=datetime(2022, 4, 6),
     format='DD-MM-YYYY'
 )
-
-st.sidebar.markdown("---")
 
 city_options = st.sidebar.multiselect(
     'City',
@@ -253,8 +319,8 @@ weather_options = st.sidebar.multiselect(
     default = ['Sunny', 'Stormy', 'Sandstorms', 'Cloudy', 'Fog', 'Windy']
 )
 
-st.sidebar.markdown("---")
-st.sidebar.markdown('### Powered by Andressa Melo Mendes')
+st.sidebar.markdown('---')
+st.sidebar.markdown('#### • Powered by Andressa Melo Mendes')
 
 #Filtro de data:
 linhas_selecionadas = df1['Order_Date'] < date_slider
@@ -275,27 +341,25 @@ df1 = df1.loc[linhas_selecionadas, :]
 # ======================================================
 # Layout no Streamlit
 # ======================================================
-st.markdown('---')
-st.title('Overall Metrics')
 
 with st.container():
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
 
     with col1:
-        #Responde: Quantos entregadores únicos
-        delivery_person_unique = df1.loc[:, 'Delivery_person_ID'].nunique()
-        col1.metric('Delivery persons', delivery_person_unique)
+        with st.container(border=True):
+            st.subheader('Overall Metrics')
+            col01, col02 = st.columns(2)
+
+            with col01:
+                #Responde: Quantos entregadores únicos
+                delivery_person_unique = df1.loc[:, 'Delivery_person_ID'].nunique()
+                col01.metric('Delivery persons', delivery_person_unique)
+
+            with col02:
+                #Responde: Distância média dos restaurantes e dos locais de entrega
+                col02.metric('Avg distance', distance(df1))
 
     with col2:
-        #Responde: Distância média dos restaurantes e dos locais de entrega
-        col2.metric('Avg distance', distance(df1))
-
-st.markdown('---')
-st.title('Avg & Std Delivery Time')
-with st.container():
-    col1, col2 = st.columns(2)
-
-    with col1:
         with st.container(border=True):
             st.subheader('Festival')
             col01, col02 = st.columns(2)
@@ -308,7 +372,7 @@ with st.container():
                 #Responde: Desvio padrão de entrega quando há festival
                 col02.metric('Std time', avg_std_time_delivery(df1, 'Yes', op='std'))
 
-    with col2:
+    with col3:
         with st.container(border=True):
             st.subheader('No Festival')
             col03, col04 = st.columns(2)
@@ -321,20 +385,44 @@ with st.container():
                 #Responde: Desvio padrão de entrega quando NÃO há festival
                 col04.metric('Std time', avg_std_time_delivery(df1, 'No', op='std'))
 
+st.warning("""
+🚨 **Atenção:** Durante festivais, o tempo médio aumenta mais de 70%,
+indicando sobrecarga na operação ou tráfego mais intenso.""")
 
+menos_espaco_topo_grafico()
 #Responde: Tempo médio e desvio padrão de entrega por cidade
-st.subheader('By city')
-avg_std_time_city(df1)
-
 with st.container():
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns([2, 3, 3])
 
     with col1:
-        #Responde: Tempo médio e desvio padrão de entrega por cidade e tipo de pedido
-        st.subheader('By City and Order Type')
-        avg_std_city(df1, 'Type_of_order')
+        st.subheader('Cities with slow delivery')
+        avg_std_time_city(df1)
+
+        st.info("""
+        💡 **Insight:** Semi-Urban maior demora.
+        """)
+
 
     with col2:
+        #Responde: Tempo médio e desvio padrão de entrega por cidade e tipo de pedido
+        st.subheader('Order type and delivery delay')
+        avg_std_city(df1, 'Type_of_order')
+        st.info("""
+        💡 **Insight:** Tipo de pedido não tem influência significativa no tempo.
+        """)
+
+    with col3:
         #Responde: Tempo médio e desvio padrão de entrega por cidade e tipo de tráfego
-        st.subheader('By City and Traffic Density')
+        st.subheader('Impact of traffic on delivery time')
         avg_std_city(df1, 'Road_traffic_density')
+
+        st.info("""
+        💡 **Insight:** Tráfego aumenta o tempo em até 25%
+        """)
+
+st.warning("""
+🚨 **Principais descobertas:**
+- Tráfego é o maior fator de atraso  
+- Regiões Semi-Urban são mais lentas  
+- Eventos aumentam drasticamente o tempo  
+""")
