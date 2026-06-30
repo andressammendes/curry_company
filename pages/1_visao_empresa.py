@@ -463,7 +463,7 @@ with tab1:
         Semi-Urban com pouquíssimos pedidos.
 
                 Recomenda-se:
-                - Incentivos de adoção de novos clientes na região Semi-Urban
+                - Estratégias de marketing na região Semi-Urban
                 - Expansão da base de parceiros
         """)
 
