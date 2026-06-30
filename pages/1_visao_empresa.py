@@ -457,9 +457,9 @@ with tab1:
     st.info("""
         #### 📌 **Conclusão:**
         A análise mostra que a cidade Metropolitian recebe quase 80% de todos os pedidos, enquanto a Semi-Urban não chega a 0.5%.
-
+            
         O grande volume de pedidos na cidade Metropolitian indica a centralização dos clientes nesta região.
-
+            
         Semi-Urban com pouquíssimos pedidos.
 
                 Recomenda-se:

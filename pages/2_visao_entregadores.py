@@ -394,9 +394,11 @@ with tab2:
 
     st.info("""
         #### 📌 **Conclusão:**
-        A análise mostra que quando o tráfico é Jam há uma pequena queda na média das avaliações.
+        A análise mostra que quando o tráfego é Jam há uma pequena queda na média das avaliações.
+            
+        Também é evidenciado na análise que em tráfego Low e clima Sunny o cliente é mais crítico em suas avaliações.
 
                 Recomenda-se:
                 - Utilização de rotas alternativas para entregas mais rápidas
-                - Aumentar o número de entregadores em situações de tráfego Jam
+                - Programa de incentivo aos entregadores mais bem avaliados
         """)

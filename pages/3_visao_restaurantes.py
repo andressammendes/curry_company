@@ -427,9 +427,9 @@ with st.container():
 st.info("""
     #### 📌 **Conclusão:**
     A análise mostra que o tempo de entrega é fortemente impactado pela densidade de tráfego e pela ocorrência de eventos (festivais).
-
+        
     Durante períodos de alto tráfego e eventos, há aumento significativo tanto no tempo médio quanto na variabilidade das entregas, indicando perda de eficiência operacional.
-
+        
     Isso sugere que a operação atual não está preparada para lidar com picos de demanda e condições adversas.
 
             Recomenda-se:
