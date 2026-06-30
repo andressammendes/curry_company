@@ -365,7 +365,7 @@ with tab1:
         """)
 
 with tab2:
-    st.info("Análise das avaliações médias de cada entregador, e das avaliações por densidade de tráfego e por condição climática.")
+    st.info("Análise das avaliações por densidade de tráfego, por condição climática e das avaliações médias de cada entregador")
     with st.container():
         col1, col2 = st.columns([2, 1])
 

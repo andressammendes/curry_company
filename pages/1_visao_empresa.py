@@ -425,7 +425,7 @@ df1 = df1.loc[linhas_selecionadas, :]
 tab1, tab2, tab3 = st.tabs(['Visão Gerencial', 'Visão Tática', 'Visão Geográfica'])
 
 with tab1:
-    st.info("Análise da quantidade de pedidos realizados por data, tráfego e cidade.")
+    #st.info("Análise da quantidade de pedidos realizados por cidade, tráfego e data.")
         
     with st.container():
         col1, col2 = st.columns([2, 1])

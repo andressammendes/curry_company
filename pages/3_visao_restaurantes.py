@@ -349,7 +349,7 @@ df1 = df1.loc[linhas_selecionadas, :]
 # ======================================================
 # Layout no Streamlit
 # ======================================================
-st.info("Análise do tempo de entrega quando há ou não Festival e tempo médio de entregas por cidade, por tipo de pedido e por densidade de tráfego.")
+st.info("Análise do tempo de entrega quando há ou não Festival e tempo médio de entregas por densidade de tráfego, por tipo de pedido e por cidade.")
 with st.container():
     col1, col2, col3 = st.columns(3)
 
