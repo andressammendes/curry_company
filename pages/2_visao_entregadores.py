@@ -49,7 +49,7 @@ def avg_ratings_delivery_person(df1):
     
     df1_aux = st.dataframe(
         avg_ratings_delivery_person, 
-        height=500,
+        height=170,
         use_container_width=True
     )
 
@@ -67,18 +67,28 @@ def get_avg_std_ratings(df1, col):
                     No caso do dataframe que avalia a densidade de tráfego há 4 linhas ('Low', 'Medium', 'High', 'Jam').
                     No dataframe que avalia as condições climáticas há 6 linhas ('Sunny', 'Stormy', 'Sandstorms', 'Cloudy', 'Fog', 'Windy')
     """
-    avg_std_ratings = (
-        df1.loc[:, ['Delivery_person_Ratings', col]]
-        .groupby(col)
-        .agg({'Delivery_person_Ratings': ['mean', 'std']})
+    # O Plotly faz o cálculo estatístico (média, mediana, quartis) automaticamente a partir dos dados puros.
+    fig = px.box(
+        df1, 
+        x=col, 
+        y='Delivery_person_Ratings', 
+        color=col, # Adiciona cores diferentes para cada categoria para facilitar a leitura
+        template='plotly_white'
     )
 
-    avg_std_ratings.columns = ['avg_delivery', 'std_delivery']
-    avg_std_ratings = avg_std_ratings.reset_index().set_index(col)
-
-    df1_aux = st.dataframe(avg_std_ratings, use_container_width=True)
+    # Melhorando o layout e a formatação
+    fig.update_layout(
+        xaxis_title=col.replace('_', ' '), # Remove o underline do nome da coluna para o eixo X
+        yaxis_title='Ratings',
+        showlegend=False,                  # Remove a legenda lateral pois o eixo X já explica as categorias
+        margin=dict(t=20, b=0, l=10, r=10),
+        height=350
+    )
     
-    return df1_aux
+    # Renderiza no Streamlit
+    chart = st.plotly_chart(fig, use_container_width=True)
+
+    return chart
 
 def top_delivers(df1, top_asc):
     """
@@ -357,17 +367,9 @@ with tab1:
 with tab2:
     st.info("Análise das avaliações médias de cada entregador, e das avaliações por densidade de tráfego e por condição climática.")
     with st.container():
-        col1, col2 = st.columns(2)
+        col1, col2 = st.columns([2, 1])
 
         with col1:  
-            #Responde: Avaliações médias por entregador
-            st.markdown('##### Delivery person ratings')
-            avg_ratings_delivery_person(df1)
-
-            st.info("""
-            💡A avaliação média dos entregadores varia de 4.3 a 4.9.""")
-
-        with col2:
             #Responde: Avaliações médias por trânsito
             st.markdown('##### Does traffic density influence ratings?')
             get_avg_std_ratings(df1, 'Road_traffic_density')
@@ -375,12 +377,20 @@ with tab2:
             st.warning("""
             🚨 As avaliações médias das entregas em tráfego Jam são menores.""")
 
+            st.info("""
+            💡Avaliações em tráfego Low e clima Sunny tem maior variação.""")
+
+            st.info("""
+            💡A avaliação média dos entregadores varia de 4.3 a 4.9.""")
+
+        with col2:
             #Responde: Avaliações médias por condições climáticas
             st.markdown('##### Do weather conditions influence ratings?')
             get_avg_std_ratings(df1, 'Weatherconditions')
 
-            st.caption("""
-            💡A avaliação média não sofre alteração significativa em diferentes climas.""")
+            #Responde: Avaliações médias por entregador
+            st.markdown('##### Delivery person ratings')
+            avg_ratings_delivery_person(df1)
 
     st.info("""
         #### 📌 **Conclusão:**

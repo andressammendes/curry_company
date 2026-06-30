@@ -247,12 +247,16 @@ def orders_by_day(df1):
     fig.update_layout(
         xaxis_title='Order Date',
         yaxis_title='ID',
-        template='plotly_white'
+        template='plotly_white',
+        height=300,                        
+        margin=dict(t=20, b=50, l=10, r=10)
     )
 
-    fig.update_layout(
-        height=300,                         # Impede que ele estique infinitamente para baixo
-        margin=dict(t=20, b=0, l=10, r=10)
+    # ATUALIZAÇÃO DO EIXO X: É aqui que a correção da sobreposição acontece
+    fig.update_xaxes(
+        tickangle=-45,           # Rotaciona as datas em 45 graus para facilitar a leitura
+        nticks=10,               # Limita para mostrar apenas ~10 datas espaçadas uniformemente no eixo
+        tickformat="%d/%m/%Y"    # Formata a data para o padrão brasileiro/europeu (dia/mês/ano)
     )
 
     fig.update_traces(marker_color='#6C5CE7')
