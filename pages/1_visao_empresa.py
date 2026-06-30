@@ -437,10 +437,10 @@ with tab1:
             traffic_order(df1, ['City', 'Road_traffic_density'])
 
             st.success("""
-            💡 Metropolitian tem mais pedidos.""")
+            💡 Metropolitian recebe quase 80% de todos os pedidos.""")
 
             st.warning("""
-            🚨 Semi-Urban pouquíssimos pedidos.""")
+            🚨 Semi-Urban pouquíssimos pedidos (menos de 0.5% do total).""")
 
         with col2:        
             #Responde: Distribuição dos pedidos por tipo de tráfego
@@ -456,11 +456,7 @@ with tab1:
 
     st.info("""
         #### 📌 **Conclusão:**
-        A análise mostra que a cidade Metropolitian recebe quase 80% de todos os pedidos, enquanto a Semi-Urban não chega a 0.5%.
-            
-        O grande volume de pedidos na cidade Metropolitian indica a centralização dos clientes nesta região.
-            
-        Semi-Urban com pouquíssimos pedidos.
+        A análise mostra uma centralização de clientes na cidade Metropolitian e oportunidade de expansão em Semi-Urban.
 
                 Recomenda-se:
                 - Estratégias de marketing na região Semi-Urban
