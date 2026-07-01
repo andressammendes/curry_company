@@ -94,6 +94,7 @@ Implement a Machine Learning module to predict delivery times in real-time based
 
 Evolve the missing data strategy by testing advanced imputation algorithms (such as K-NN Imputer) in a staging environment to measure deviation in operational KPIs.
 
-Developed by Andressa Melo Mendes
+---
+**Developed by Andressa Melo Mendes**
 
 Connect with me on [LinkedIn](https://www.linkedin.com/in/andressa-melo-mendes/) to discuss data solutions and business intelligence.
